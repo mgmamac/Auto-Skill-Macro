@@ -5,7 +5,7 @@ from random import randrange
 import pystray
 from PIL import Image, ImageDraw
 import threading
-import keyboard
+from pynput.keyboard import Key, Listener
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
 INPUT_KEYBOARD = 1
@@ -103,7 +103,7 @@ def auto():
         fsswift = 0
         fsbubble = 0
 
-        for i in range(1,70):
+        for i in range(1,120):
             Press(0x31)
             Press(0x32)
             Press(0x33)
@@ -118,7 +118,7 @@ def auto():
             if(not autoRun):
                 break
 
-            if(fsswift == 12):
+            if(fsswift == 30):
                 AltTab()
                 Press(0x70)
                 Press(0x32)
@@ -127,7 +127,7 @@ def auto():
                 AltTab()
                 fsswift = 0
 
-            if(fsbubble == 3):
+            if(fsbubble == 6):
                 AltTab()
                 Press(0x70)
                 Press(0x38)

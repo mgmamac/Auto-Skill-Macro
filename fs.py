@@ -103,7 +103,7 @@ def auto():
         fsswift = 0
         fsbubble = 0
 
-        for i in range(1,120):
+        for i in range(1,150):
             Press(0x31)
             Press(0x32)
             Press(0x33)

@@ -84,26 +84,7 @@ def auto():
         if(not autoRun):
             break
 
-        AltTab()
-
-        Press(0x70)
-        Press(0x31)
-        Press(0x32)
-        Press(0x33)
-        Press(0x34)
-        Press(0x35)
-        Press(0x36)
-        Press(0x37)
-
-        if(not autoRun):
-            break
-
-        AltTab()
-
-        fsswift = 0
-        fsbubble = 0
-
-        for i in range(1,150):
+        for i in range(1,120):
             Press(0x31)
             Press(0x32)
             Press(0x33)
@@ -118,28 +99,6 @@ def auto():
             if(not autoRun):
                 break
 
-            if(fsswift == 30):
-                AltTab()
-                Press(0x70)
-                Press(0x32)
-                Press(0x33)
-                Press(0x34)
-                AltTab()
-                fsswift = 0
-
-            if(fsbubble == 6):
-                AltTab()
-                Press(0x70)
-                Press(0x38)
-                Press(0x30)
-                AltTab()
-                fsbubble = 0
-
-            if(not autoRun):
-                break
-
-            fsswift += 1
-            fsbubble += 1
         
         # you can change 0x30 to any key you want. For more info look at :
         # msdn.microsoft.com/en-us/library/dd375731

@@ -69,6 +69,7 @@ def AltTab():
     time.sleep(randrange(5,10)/100)
     ReleaseKey(0x09)
     ReleaseKey(0xA4)
+    time.sleep(0.5)
 
 autoRun = True
 

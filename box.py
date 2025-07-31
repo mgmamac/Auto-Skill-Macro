@@ -11,7 +11,10 @@ from PIL import Image
 import numpy as np
 
 boxActive = False
+buffActive = False
 autoRun = True
+boxInterval = 0
+buffInterval = 0
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
 INPUT_KEYBOARD = 1
@@ -139,10 +142,10 @@ def is_box_active():
     sim = calculate_similarity(img1, img2)
     
     if sim >= 70:
-        print("Lucky Box!")
+        #print("Lucky Box!")
         return True
     else:
-        print("Not Lucky Box!")
+        #print("Not Lucky Box!")
         return False
         
 def grayscale():
@@ -170,67 +173,78 @@ def check_box():
     if(is_box_active()):
         boxActive = True
         
-        countdown = threading.Thread(target = timer, daemon = True)
-        countdown.start()
+        boxCountdown = threading.Thread(target = box_timer, daemon = True)
+        boxCountdown.start()
 
-def timer():
-    global interval
+def box_timer():
+    global boxInterval
     global boxActive
-    print("Timer starts!")
-    time.sleep(60*interval)
+    #print("Timer starts!")
+    time.sleep(60*boxInterval)
     boxActive = False
-    print("Box expired!")
+    #print("Box expired!")
+    
+def buff_timer():
+    global buffInterval
+    global buffActive
+    #print("Timer starts!")
+    time.sleep(60*buffInterval)
+    buffActive = False
+    #print("Box expired!")
 
 def auto():
     global autoRun
     global boxActive
+    global buffActive
     lootCounter = 0
     
     while(autoRun):
-        Press(0x71)
-        Press(0x38)
-        Press(0x39)
-        Press(0x30)
-        Press(0x70)
-
-        if(not autoRun):
-            break
-
-        lootCounter = 0
-        
-        for i in range(1,120):
-            Press(0x31)
-            Press(0x32)
-            Press(0x33)
-            Press(0x34)
-            Press(0x35)
-            Press(0x36)
-            Press(0x37)
+        if not buffActive:
+            Press(0x71)
             Press(0x38)
             Press(0x39)
             Press(0x30)
+            Press(0x70)
             
-            lootCounter+=1
+            buffActive = True
+            buffCountdown = threading.Thread(target = buff_timer, daemon = True)
+            buffCountdown.start()
 
-            if(not autoRun):
-                break
-            if(lootCounter == 10):
-                if(not boxActive):
-                    time.sleep(2)
-                    for i in range(3):
-                        if(not boxActive):
-                            Press(0x20)
-                            time.sleep(0.5)
-                            check_box()
-                lootCounter = 0
+        Press(0x31)
+        Press(0x32)
+        Press(0x33)
+        Press(0x34)
+        Press(0x35)
+        Press(0x36)
+        Press(0x37)
+        Press(0x38)
+        Press(0x39)
+        Press(0x30)
+            
+        lootCounter+=1
+
+        if(lootCounter == 10):
+            if(not boxActive):
+                time.sleep(2)
+                for i in range(3):
+                    if(not boxActive):
+                        Press(0x20)
+                        time.sleep(0.5)
+                        check_box()
+            lootCounter = 0
         
         # you can change 0x30 to any key you want. For more info look at :
         # msdn.microsoft.com/en-us/library/dd375731
         
-def read_interval():
-    global interval
-    f = open("interval.txt")
-    interval = int(f.read())
+def read_boxInterval():
+    global boxInterval
+    f = open("boxInterval.txt")
+    boxInterval = float(f.read())
+    
+def read_buffInterval():
+    global buffInterval
+    f = open("buffInterval.txt")
+    buffInterval = float(f.read())
 
 # Create a simple image for the icon
 def create_image(width, height, color1, color2):
@@ -267,6 +281,9 @@ icon = pystray.Icon(
 
 def on_release(key):
     global autoRun
+    global boxActive
+    global buffActive
+    
     if key == Key.f7:
         if(autoRun == False):
             autoRun = True
@@ -274,12 +291,15 @@ def on_release(key):
             t.start()
         else:
             autoRun = False
+            boxActive = False
+            buffActive = False
         time.sleep(2)
         
     if key == Key.f8:
         train()
 
-read_interval()
+read_boxInterval()
+read_buffInterval()
 listener = Listener(on_release=on_release, daemon = True)
 listener.start()
 
